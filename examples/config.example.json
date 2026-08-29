@@ -1,0 +1,67 @@
+{
+  "poll_interval_seconds": 900,
+  "warm_rent_target_eur": 2000,
+  "rooms_min": 2.0,
+  "rooms_max": 3.0,
+  "move_in_from": "2027-01-01",
+  "move_in_to": "2027-02-28",
+  "commute_destination": "Berlin Hauptbahnhof",
+  "max_commute_minutes": 60,
+  "amenity_query": "Supermarkt",
+  "max_notifications_per_run": 15,
+  "telegram": {
+    "enabled": false
+  },
+  "contacts": {
+    "enabled": false,
+    "mode": "shadow",
+    "deepseek_personalization": false,
+    "real_send_enabled": false,
+    "approval_mode": "per_listing_id",
+    "approval_ttl_minutes": 60,
+    "reply_notifications_per_run": 10
+  },
+  "official_mail_sources": {
+    "enabled": false,
+    "account_scope": "primary",
+    "lookback_days": 7,
+    "max_messages": 200,
+    "timeout_seconds": 60,
+    "verified_saved_search_platforms": [],
+    "saved_search_filters_verified": false,
+    "blocked_reason": "Enable only after verifying saved-search filters and sender authentication"
+  },
+  "catch_up": {
+    "enabled": true,
+    "trigger_gap_seconds": 1050,
+    "minimum_pages": 2,
+    "known_boundary_pages": 2,
+    "max_pages_per_search": 40,
+    "page_delay_seconds": 0.8,
+    "browser_startup_wait_seconds": 120
+  },
+  "email": {
+    "enabled": false,
+    "transport": "apple_mail",
+    "recipient": "",
+    "sender": "",
+    "subject_prefix": "Housing monitor",
+    "max_listings_per_email": 15,
+    "max_batches_per_run": 1,
+    "max_age_hours": 24,
+    "timeout_seconds": 30
+  },
+  "property_searches": [
+    {
+      "property_kind": "apartment",
+      "property_label": "Apartment",
+      "listing_path": "wohnung-mieten",
+      "price_type": "calculatedtotalrent",
+      "priority": 0
+    }
+  ],
+  "searches": [
+    {"name": "Berlin", "slug": "berlin"},
+    {"name": "Potsdam", "slug": "potsdam"}
+  ]
+}

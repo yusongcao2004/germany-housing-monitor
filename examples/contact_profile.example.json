@@ -1,0 +1,17 @@
+{
+  "profile_version": "example-v1",
+  "approval_mode": "per_listing_id",
+  "applicants": [
+    {"name": "Max Mustermann"}
+  ],
+  "verified_statements_de": {
+    "introduction": "Ich interessiere mich für die angebotene Wohnung.",
+    "tenancy": "Ich bewerbe mich als Hauptmieter.",
+    "move_in": "Ich möchte zum 15. Januar 2027 einziehen.",
+    "household": "Ich bin Nichtraucher und habe keine Haustiere.",
+    "financial": "Welche finanziellen Nachweise Sie benötigen, teilen Sie uns bitte gerne mit."
+  },
+  "financial_support": {
+    "formal_guarantee_confirmed": false
+  }
+}

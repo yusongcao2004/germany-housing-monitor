@@ -1,0 +1,27 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+config.json
+
+# Personal application data and runtime state
+state/
+browser-profile/
+backups/
+*.sqlite
+*.sqlite3
+*.sqlite3-*
+*.db
+*.log
+
+# Local launchd files generated from examples
+*.local.plist

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>io.github.housing-browser</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/Applications/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing</string>
+    <string>--user-data-dir=/ABSOLUTE/PATH/TO/germany-housing-monitor/browser-profile</string>
+    <string>--remote-debugging-address=127.0.0.1</string>
+    <string>--remote-debugging-port=9229</string>
+    <string>--no-first-run</string>
+    <string>--start-minimized</string>
+    <string>about:blank</string>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>/ABSOLUTE/PATH/TO/germany-housing-monitor</string>
+  <key>RunAtLoad</key>
+  <false/>
+  <key>KeepAlive</key>
+  <false/>
+  <key>ProcessType</key>
+  <string>Interactive</string>
+  <key>StandardOutPath</key>
+  <string>/ABSOLUTE/PATH/TO/germany-housing-monitor/state/browser.out.log</string>
+  <key>StandardErrorPath</key>
+  <string>/ABSOLUTE/PATH/TO/germany-housing-monitor/state/browser.err.log</string>
+</dict>
+</plist>

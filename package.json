@@ -1,0 +1,8 @@
+{
+  "name": "germany-housing-monitor-runtime",
+  "private": true,
+  "description": "Local browser runtime dependency for the housing monitor",
+  "devDependencies": {
+    "agent-browser": "0.26.0"
+  }
+}
