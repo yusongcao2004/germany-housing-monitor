@@ -14,7 +14,7 @@ Verified on 2026-08-29 with Python 3.11.
 - [x] Added a privacy preflight and a GitHub Actions check.
 - [x] Generated `package-lock.json`; `npm` reported zero known vulnerabilities.
 - [x] Compiled all Python files without warnings promoted to errors.
-- [x] Passed all 85 unit tests.
+- [x] Passed all 90 unit tests.
 - [x] Passed the isolated workflow simulation without external writes.
 - [x] Parsed both checked-in and rendered launchd plists successfully.
 - [x] Passed the final privacy scan with zero findings.
@@ -24,6 +24,6 @@ Verified on 2026-08-29 with Python 3.11.
 
 - [x] Repository name: `germany-housing-monitor`.
 - [x] Visibility: public, only after the private CI gate passes.
-- [x] No license file added; default copyright rules apply.
+- [x] License: MIT, with only the public GitHub handle in the copyright notice.
 
 Only the files covered by this checklist belong in the first public release.

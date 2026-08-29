@@ -59,6 +59,14 @@ Before the first live discovery run, establish a silent baseline so existing lis
 python3 monitor.py --baseline-only --no-jitter
 ```
 
+Run one normal discovery cycle explicitly:
+
+```bash
+python3 monitor.py --run-once
+```
+
+Running `python3 monitor.py` without an operation only prints usage and exits; it never opens the browser or scans listings.
+
 If catch-up scanning is enabled, initialize its deeper boundary once:
 
 ```bash
@@ -122,4 +130,4 @@ The privacy preflight fails on private runtime directories, local configuration,
 
 Run the privacy preflight immediately before every public push. Never commit `state/`, `browser-profile/`, `backups/`, `.env`, `config.json`, exported emails, screenshots of authenticated pages, or application documents.
 
-No open-source license has been selected yet. Until the repository owner adds one, normal copyright rules apply.
+Licensed under the MIT License. See [LICENSE](LICENSE).

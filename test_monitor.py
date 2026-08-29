@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import contextlib
 import datetime as dt
 import importlib.util
+import io
 import plistlib
 import sqlite3
 import sys
@@ -84,6 +86,100 @@ class MonitorTests(unittest.TestCase):
         config["move_in_to"] = "2027-01-01"
         with self.assertRaisesRegex(monitor.MonitorError, "precedes"):
             monitor.validate_config(config)
+
+    def test_main_requires_an_explicit_action_before_any_side_effect(self) -> None:
+        with (
+            mock.patch.object(monitor.time, "sleep") as sleep,
+            mock.patch.object(monitor, "load_config") as load_config,
+            mock.patch.object(monitor, "exclusive_lock") as exclusive_lock,
+            mock.patch.object(monitor, "managed_dedicated_browser") as browser,
+            mock.patch.object(monitor, "run_once") as run_once,
+            contextlib.redirect_stderr(io.StringIO()),
+        ):
+            with self.assertRaises(SystemExit) as caught:
+                monitor.main([])
+        self.assertEqual(caught.exception.code, 2)
+        sleep.assert_not_called()
+        load_config.assert_not_called()
+        exclusive_lock.assert_not_called()
+        browser.assert_not_called()
+        run_once.assert_not_called()
+
+    def test_no_jitter_alone_is_not_an_action(self) -> None:
+        with (
+            mock.patch.object(monitor.time, "sleep") as sleep,
+            mock.patch.object(monitor, "load_config") as load_config,
+            mock.patch.object(monitor, "run_once") as run_once,
+            contextlib.redirect_stderr(io.StringIO()),
+        ):
+            with self.assertRaises(SystemExit) as caught:
+                monitor.main(["--no-jitter"])
+        self.assertEqual(caught.exception.code, 2)
+        sleep.assert_not_called()
+        load_config.assert_not_called()
+        run_once.assert_not_called()
+
+    def test_main_run_once_dispatches_exactly_one_scan(self) -> None:
+        config = {"test": True}
+        result = {"failures": []}
+        with (
+            mock.patch.object(monitor.time, "sleep") as sleep,
+            mock.patch.object(monitor, "load_config", return_value=config),
+            mock.patch.object(
+                monitor, "exclusive_lock", return_value=contextlib.nullcontext()
+            ),
+            mock.patch.object(
+                monitor,
+                "managed_dedicated_browser",
+                return_value=contextlib.nullcontext(),
+            ) as browser,
+            mock.patch.object(monitor, "run_once", return_value=result) as run_once,
+            contextlib.redirect_stdout(io.StringIO()),
+        ):
+            monitor.main(["--run-once", "--no-jitter"])
+        sleep.assert_not_called()
+        browser.assert_called_once_with(config)
+        run_once.assert_called_once_with(
+            force_baseline=False,
+            no_jitter=True,
+            lock_held=True,
+        )
+
+    def test_main_baseline_only_dispatches_a_forced_baseline(self) -> None:
+        config = {"test": True}
+        with (
+            mock.patch.object(monitor, "load_config", return_value=config),
+            mock.patch.object(
+                monitor, "exclusive_lock", return_value=contextlib.nullcontext()
+            ),
+            mock.patch.object(
+                monitor,
+                "managed_dedicated_browser",
+                return_value=contextlib.nullcontext(),
+            ),
+            mock.patch.object(
+                monitor, "run_once", return_value={"failures": []}
+            ) as run_once,
+            contextlib.redirect_stdout(io.StringIO()),
+        ):
+            monitor.main(["--baseline-only", "--no-jitter"])
+        run_once.assert_called_once_with(
+            force_baseline=True,
+            no_jitter=True,
+            lock_held=True,
+        )
+
+    def test_main_rejects_conflicting_actions(self) -> None:
+        with (
+            mock.patch.object(monitor, "telegram_test") as telegram_test,
+            mock.patch.object(monitor, "run_once") as run_once,
+            contextlib.redirect_stderr(io.StringIO()),
+        ):
+            with self.assertRaises(SystemExit) as caught:
+                monitor.main(["--run-once", "--telegram-test"])
+        self.assertEqual(caught.exception.code, 2)
+        telegram_test.assert_not_called()
+        run_once.assert_not_called()
 
     def test_search_url_uses_warm_rent(self) -> None:
         url = monitor.search_url("berlin", 2000)
@@ -334,6 +430,7 @@ class MonitorTests(unittest.TestCase):
         with path.open("rb") as handle:
             payload = plistlib.load(handle)
         self.assertGreaterEqual(payload["ExitTimeOut"], 15)
+        self.assertEqual(payload["ProgramArguments"].count("--run-once"), 1)
 
     def test_browser_start_refuses_an_existing_cdp_endpoint(self) -> None:
         with (

@@ -2367,16 +2367,29 @@ def backfill_current_email() -> None:
         )
 
 
-def main() -> None:
+def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--run-once", action="store_true")
-    parser.add_argument("--baseline-only", action="store_true")
-    parser.add_argument("--telegram-test", action="store_true")
-    parser.add_argument("--email-test", action="store_true")
-    parser.add_argument("--backfill-current-email", action="store_true")
-    parser.add_argument("--initialize-catch-up-baseline", action="store_true")
-    parser.add_argument("--no-jitter", action="store_true")
-    args = parser.parse_args()
+    operation = parser.add_mutually_exclusive_group(required=True)
+    operation.add_argument(
+        "--run-once",
+        action="store_true",
+        help="perform one normal discovery and delivery cycle",
+    )
+    operation.add_argument(
+        "--baseline-only",
+        action="store_true",
+        help="perform one scan that records a silent discovery baseline",
+    )
+    operation.add_argument("--telegram-test", action="store_true")
+    operation.add_argument("--email-test", action="store_true")
+    operation.add_argument("--backfill-current-email", action="store_true")
+    operation.add_argument("--initialize-catch-up-baseline", action="store_true")
+    parser.add_argument(
+        "--no-jitter",
+        action="store_true",
+        help="skip the randomized delay before a discovery scan",
+    )
+    args = parser.parse_args(argv)
     if args.telegram_test:
         telegram_test()
         return
@@ -2392,6 +2405,8 @@ def main() -> None:
             with managed_dedicated_browser(config):
                 initialize_catch_up_baseline(lock_held=True)
         return
+    if not (args.run_once or args.baseline_only):
+        parser.error("selected operation is not implemented")
     if not args.no_jitter:
         time.sleep(random.randint(0, 45))
     config = load_config()
